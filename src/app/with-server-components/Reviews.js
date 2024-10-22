@@ -2,57 +2,50 @@ import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
 
 const getReviews = async (id) => {
-  const reviews = await sql`select * from reviews where ref_product = ${id}`;
+  const reviews = await sql`SELECT * FROM reviews WHERE ref_product = ${id}`;
   return reviews.rows ? reviews.rows : [];
 };
 
 export default async function Reviews(props) {
   const submitForm = async (formData) => {
     "use server";
-    await sql`insert into reviews (name, text, ref_product) values (${formData.get(
+    await sql`INSERT INTO reviews (name, text, ref_product) VALUES (${formData.get(
       "name"
     )}, ${formData.get("text")}, ${formData.get("id")})`;
-
     revalidatePath("/with-server-components");
   };
 
   const data = await getReviews(props.id);
 
   return (
-    <section className="w-6/12 lg:w-1/2 py-6 md:py-12 lg:py-16">
-      <div className="container grid items-start gap-8 lg:grid-cols-1 px-4 md:px-6">
+    <section className="w-full py-6 md:py-12 lg:py-16">
+      <div className="container grid items-start gap-8 px-4 md:px-6">
         {data &&
-          data.map(({ id, name, text }) => {
-            return (
-              <div key={id} className="border-2 rounded-lg p-2 border-gray-500">
-                <p className="">{name}</p>
-                <p className="text-zinc-400">{text}</p>
-              </div>
-            );
-          })}
+          data.map(({ id, name, text }) => (
+            <div key={id} className="border-2 rounded-lg p-4 border-gray-200">
+              <p className="font-semibold">{name}</p>
+              <p className="text-gray-600">{text}</p>
+            </div>
+          ))}
       </div>
-      <p className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
-        Post a review
-      </p>
-      <form action={submitForm}>
+      <form action={submitForm} className="mt-8 space-y-4">
         <input
           type="text"
           placeholder="Name"
           name="name"
-          className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
         />
-        <br />
         <textarea
           placeholder="Write a review..."
           name="text"
-          className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
         ></textarea>
         <input type="hidden" value={props.id} name="id" />
         <button
           type="submit"
-          className="bg-transparent text-white font-semibold hover:text-white py-2 px-4 border border-white rounded mt-5"
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
         >
-          Save
+          Submit Review
         </button>
       </form>
     </section>

@@ -23,45 +23,103 @@ export default function AllReportsPage() {
   }, []);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1 className="text-5xl tracking-tighter text-center">
-        All Previous Complaints
-      </h1>
-      {error && <p className="text-red-500 text-center">{error}</p>}
-      <div className="container mx-auto py-6">
-        <table className="min-w-full bg-white">
-          <thead>
-            <tr>
-              <th className="py-2 border-b border-gray-200">Abuse Type</th>
-              <th className="py-2 border-b border-gray-200">Details</th>
-              <th className="py-2 border-b border-gray-200">Submitted At</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reports.length > 0 ? (
-              reports.map(({ id, abuse_type, details, submitted_at }) => (
-                <tr key={id}>
-                  <td className="py-2 border-b border-gray-200 text-center">
-                    {abuse_type}
-                  </td>
-                  <td className="py-2 border-b border-gray-200 text-center">
-                    {details}
-                  </td>
-                  <td className="py-2 border-b border-gray-200 text-center">
-                    {new Date(submitted_at).toLocaleString()}
+    <div style={styles.pageWrapper}>
+      <div style={styles.card}>
+        <h1 style={styles.heading}>All Previous Complaints</h1>
+        {error && <p style={styles.error}>{error}</p>}
+        <div style={styles.tableContainer}>
+          <table style={styles.table}>
+            <thead>
+              <tr>
+                <th style={styles.th}>Abuse Type</th>
+                <th style={styles.th}>Details</th>
+                <th style={styles.th}>Submitted At</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reports.length > 0 ? (
+                reports.map(({ id, abuse_type, details, submitted_at }) => (
+                  <tr key={id} style={styles.tr}>
+                    <td style={styles.td}>{abuse_type}</td>
+                    <td style={styles.td}>{details}</td>
+                    <td style={styles.td}>
+                      {new Date(submitted_at).toLocaleString()}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3" style={styles.noReports}>
+                    No reports available
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="3" className="py-4 text-center text-gray-500">
-                  No reports available
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
 }
+
+const styles = {
+  pageWrapper: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "100vh",
+    backgroundColor: "#f4f4f4",
+    padding: "20px",
+  },
+  card: {
+    backgroundColor: "#ffffff",
+    padding: "20px",
+    borderRadius: "12px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    maxWidth: "90%",
+    width: "100%",
+    textAlign: "center",
+  },
+  heading: {
+    fontSize: "1.5rem",
+    fontWeight: "bold",
+    marginBottom: "20px",
+    color: "#333",
+  },
+  error: {
+    color: "#ff0000",
+    marginBottom: "20px",
+  },
+  tableContainer: {
+    overflowX: "auto",
+  },
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+    marginTop: "20px",
+  },
+  th: {
+    padding: "8px",
+    borderBottom: "2px solid #ddd",
+    backgroundColor: "#f9f9f9",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  tr: {
+    transition: "background-color 0.2s ease",
+  },
+  td: {
+    padding: "8px",
+    borderBottom: "1px solid #ddd",
+    textAlign: "center",
+  },
+  noReports: {
+    padding: "20px",
+    color: "#777",
+    textAlign: "center",
+  },
+};
+
+styles.tr[":hover"] = {
+  backgroundColor: "#f1f1f1",
+};
